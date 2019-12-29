@@ -9,7 +9,7 @@ class NoDoItem extends StatelessWidget{
 
   NoDoItem.map(dynamic obj){
     this._itemName = obj["itemName"]; // mapping to database
-    this._dateCreated = obj["dateCreated"];
+    this._dateCreated = obj["dataCreated"];
     this._id = obj["id"];
   }
 
@@ -22,7 +22,7 @@ class NoDoItem extends StatelessWidget{
   Map<String,dynamic> toMap(){
     var map = new Map<String, dynamic>();
     map["itemName"] = _itemName;
-    map["dateCreated"] = _dateCreated;
+    map["dataCreated"] = _dateCreated;
     if (_id != null){
       map["id"]= _id;
     }
@@ -31,7 +31,7 @@ class NoDoItem extends StatelessWidget{
 
   NoDoItem.fromMap(Map<String,dynamic> map){
     this._itemName = map["itemName"];
-    this._dateCreated = map["dateCreated"];
+    this._dateCreated = map["dataCreated"];
     this._id = map["id"];
   }
 
@@ -44,7 +44,7 @@ class NoDoItem extends StatelessWidget{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(_itemName,
-              style: TextStyle(
+              style: new TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 16.9
@@ -52,8 +52,8 @@ class NoDoItem extends StatelessWidget{
             ),
             new Container(
               margin: const EdgeInsets.only(top: 5.0),
-              child: Text("Created on: $_dateCreated",
-              style: TextStyle(
+              child: new Text("Created on: $_dateCreated",
+              style: new TextStyle(
                   color: Colors.white70,
                   fontSize: 13.5,
                   fontStyle: FontStyle.italic),)

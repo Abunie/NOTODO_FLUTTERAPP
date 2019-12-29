@@ -34,21 +34,29 @@ class DatabaseHelper {
 
   void _onCreate(Database db, int version) async{
     await db.execute(
-      "CREATE TABLE $tableName(id INTEGER PRIMARY KEY, $columnItemName TEXT, $columnDateCreated DATE");
+      "CREATE TABLE $tableName(id INTEGER PRIMARY KEY, $columnItemName TEXT, $columnDateCreated DATE)");
     print("Table is created");
   }
   //insertion
-   Future<List> saveItem(NoDoItem item) async{
+   Future<int> saveItem(NoDoItem item) async{
     var dbClient = await db;
-    var result = await dbClient.rawQuery("SELECT * FROM $tableName ORDER BY $columnItemName ASC");//ASC from 1st that was added to last
+    int res = await dbClient.insert("$tableName", item.toMap());
+    print("Item saved" + res.toString());
+    return res;
+  }
 
-    return result.toList();
+  Future<List> getItems() async{
+   var dbClient = await db;
+   var result = await dbClient.rawQuery("SELECT * FROM $tableName ORDER BY $columnItemName ASC");
 
-}
+   return result.toList();
+
+ }
+
 
   Future<int> getCount() async{
     var dbClient = await db;
-    return Sqflite.firstIntValue(await dbClient.rawQuery("SELECT COUNT(*) FROM $tableName");
+    return Sqflite.firstIntValue(await dbClient.rawQuery("SELECT COUNT(*) FROM $tableName"));
   }
 
   Future<NoDoItem> getItem(int id) async{
