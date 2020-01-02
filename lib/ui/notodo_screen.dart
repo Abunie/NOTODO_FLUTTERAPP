@@ -8,19 +8,131 @@ class NotoDoScreen extends StatefulWidget{
 class _NotoDoScreenState extends State<NotoDoScreen> {
   final TextEditingController _textEditingController = new TextEditingController();
   var db = new DatabaseHelper();
+  final List<NoDoItem>_itemList = <NoDoItem>[];
+
+
+  @override
+  void initState() {
+    super.initState();
+    _readNoDoList();
+  }
+
   void _handleSubmitted(String text) async{
     _textEditingController.clear();
 
     NoDoItem noDoItem = new NoDoItem(text,DateTime.now().toIso8601String());
     int savedItemId = await db.saveItem(noDoItem);
+    NoDoItem addedItem = await db.getItem(savedItemId);
+    setState(() {
+      _itemList.insert(0, addedItem);
+    });
+
   }
 
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       backgroundColor: Colors.black87,
-      body: Column(),
+       body: new ListView.builder(
+         itemCount: _itemList.length,
+         reverse: false,
+         itemBuilder: (context, index) {
+           return new Card(
+                      color: Colors.white10,
+                      child: new ListTile(
+                        title: _itemList[index],
+                        onLongPress:() => debugPrint(""),
+                        trailing: new Listener(
+                          key: new Key(_itemList[index].itemName),
+                          child: new Icon(Icons.delete,
+                          color: Colors.redAccent,),
+                          onPointerDown: (pointerEvent)=> debugPrint(""),
+                        ),
+
+                ),
+                );
+
+//           return Container(
+//             padding: new EdgeInsets.all(8.0),
+//             height: 50,
+//             child: Text('${_itemList[index].itemName}' , style: TextStyle(color: Colors.white, fontSize: 20),
+//             ),
+//           );
+         },
+//         separatorBuilder: (BuildContext context, int index) => const Divider(),
+       ),
+
+
+
+//        body:new Row(
+//          children: <Widget>[
+//            Expanded(
+//              child: SizedBox(
+//                height: 20.0,
+//                child: new ListView.builder(
+//                  scrollDirection: Axis.horizontal,
+//                  reverse: false,
+//                  itemCount: _itemList.length,
+//                  itemBuilder: (BuildContext ctxt, int index) {
+//                    return new Text(_itemList[index].itemName);
+////                    return new Card(
+////                      color: Colors.white10,
+////                      child: new ListTile(
+////                        title: _itemList[index],
+////    //                    onLongPress:() => debugPrint(""),
+////                        trailing: new Listener(
+////                          key: new Key(_itemList[index].itemName),
+////                          child: new Icon(Icons.delete,
+////                          color: Colors.redAccent,),
+////    //                      onPointerDown: (pointerEvent)=> debugPrint(""),
+////                        ),
+////
+////                ),
+////                );
+//                  },
+//                ),
+//              ),
+//            ),
+//            new IconButton(
+//              icon: Icon(Icons.remove_circle),
+//              onPressed: () {},
+//            ),
+//          ],
+//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//        ),
+
+
+//      body: new Column(
+//        children: <Widget>[
+//          new Flexible(child: new ListView.builder(
+//              padding: new EdgeInsets.all(8.0),
+//              reverse: false,
+////              itemCount: _itemList.length,
+//              itemBuilder: (_,int index){
+//                return new Card(
+//                  color: Colors.white10,
+//                  child: new ListTile(
+//                    title: _itemList[index],
+////                    onLongPress:() => debugPrint(""),
+//                    trailing: new Listener(
+//                      key: new Key(_itemList[index].itemName),
+//                      child: new Icon(Icons.delete,
+//                      color: Colors.redAccent,),
+////                      onPointerDown: (pointerEvent)=> debugPrint(""),
+//                    ),
+//
+//                ),
+//                );
+//
+//              })),
+////          new Divider(
+////            height: 1.0,
+////          )
+//
+//
+//        ],
+//      ),
       floatingActionButton: new FloatingActionButton(
           tooltip: "Add Item",
           backgroundColor: Colors.pinkAccent,
@@ -64,7 +176,15 @@ class _NotoDoScreenState extends State<NotoDoScreen> {
       builder:(_){
         return alert;
     });
-
   }
+
+  _readNoDoList() async {
+    List items = await db.getItems();
+    items.forEach((item) {
+      NoDoItem noDoItem = NoDoItem.fromMap(item);
+      print("Db items: ${noDoItem.itemName}");
+    });
+  }
+
 }
 
