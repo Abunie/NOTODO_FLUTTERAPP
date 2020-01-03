@@ -23,6 +23,9 @@ class _NotoDoScreenState extends State<NotoDoScreen> {
     NoDoItem noDoItem = new NoDoItem(text,DateTime.now().toIso8601String());
     int savedItemId = await db.saveItem(noDoItem);
     NoDoItem addedItem = await db.getItem(savedItemId);
+    /**
+     * Set state basically says we want to redraw our screen with the updated data
+     */
     setState(() {
       _itemList.insert(0, addedItem);
     });
@@ -48,7 +51,7 @@ class _NotoDoScreenState extends State<NotoDoScreen> {
                           key: new Key(_itemList[index].itemName),
                           child: new Icon(Icons.delete,
                           color: Colors.redAccent,),
-                          onPointerDown: (pointerEvent)=> debugPrint(""),
+                          onPointerDown: (pointerEvent)=> _deleteNoDo(_itemList[index].id, index),
                         ),
 
                 ),
@@ -184,12 +187,28 @@ class _NotoDoScreenState extends State<NotoDoScreen> {
     List items = await db.getItems();
     items.forEach((item) {
 //      NoDoItem noDoItem = NoDoItem.fromMap(item);
+      /**
+       * Set state basically says we want to redraw our screen with the updated data
+       */
       setState(() {
         _itemList.add(NoDoItem.map(item));
       });
 //      print("Db items: ${noDoItem.itemName}");
     });
   }
+
+  _deleteNoDo(int id, int index) async{
+    debugPrint("Deleted Item " + id.toString() + "Index " + index.toString());
+    await db.deleteItem(id);
+    /**
+     * Set state basically says we want to redraw our screen with the updated data
+     */
+    setState(() {
+      _itemList.removeAt(index);
+    });
+
+  }
+
 
 }
 
