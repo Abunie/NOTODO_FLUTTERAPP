@@ -37,6 +37,7 @@ class _NotoDoScreenState extends State<NotoDoScreen> {
        body: new ListView.builder(
          itemCount: _itemList.length,
          reverse: false,
+         padding: new EdgeInsets.all(8.0),
          itemBuilder: (context, index) {
            return new Card(
                       color: Colors.white10,
