@@ -166,6 +166,7 @@ class _NotoDoScreenState extends State<NotoDoScreen> {
               onPressed: () {
                 _handleSubmitted(_textEditingController.text);
                 _textEditingController.clear();
+                Navigator.pop(context);
               },
               child: Text("Save")),
           new FlatButton(onPressed: () => Navigator.pop(context),
@@ -182,8 +183,11 @@ class _NotoDoScreenState extends State<NotoDoScreen> {
   _readNoDoList() async {
     List items = await db.getItems();
     items.forEach((item) {
-      NoDoItem noDoItem = NoDoItem.fromMap(item);
-      print("Db items: ${noDoItem.itemName}");
+//      NoDoItem noDoItem = NoDoItem.fromMap(item);
+      setState(() {
+        _itemList.add(NoDoItem.map(item));
+      });
+//      print("Db items: ${noDoItem.itemName}");
     });
   }
 
